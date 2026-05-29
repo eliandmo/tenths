@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Represent Tenths as Fractions and Decimals</title>
+<style>
+/* ═══════════════════════════════════════
+   FONTS
+═══════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --bg:     #F5F0FF;
+  --navy:   #1A1A3E;
+  --blue:   #3B5BDB;
+  --blue2:  #4C6EF5;
+  --blue-lt:#EDF2FF;
+  --teal:   #0CA678;
+  --teal-lt:#D3F9D8;
+  --orange: #F76707;
+  --org-lt: #FFF3E0;
+  --red:    #E03131;
+  --red-lt: #FFF0F0;
+  --gold:   #F59F00;
+  --gold-lt:#FFF9DB;
+  --purple: #7048E8;
+  --pur-lt: #F3F0FF;
+  --gray:   #868E96;
+  --border: #DEE2E6;
+  --white:  #FFFFFF;
+
+  --fh: 'Fredoka One', Georgia, serif;
+  --fb: 'Nunito', 'Trebuchet MS', sans-serif;
+
+  --sh:  0 4px 20px rgba(26,26,62,.10);
+  --sh2: 0 10px 40px rgba(26,26,62,.16);
+}
+
+/* ═══════════════════════════════════════
+   RESET
+═══════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--fb);
+  background:var(--bg);
+  color:var(--navy);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ═══════════════════════════════════════
+   BACKGROUND PATTERN
+═══════════════════════════════════════ */
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle at 15% 25%, rgba(59,91,219,.06) 0%, transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(112,72,232,.06) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(12,166,120,.04) 0%, transparent 55%);
+}
+
+/* ═══════════════════════════════════════
+   TOP HEADER
+═══════════════════════════════════════ */
+.top-bar{
+  background:var(--navy);
+  padding:1.2rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:.6rem;
+  position:relative;z-index:1;
+  box-shadow:0 3px 16px rgba(26,26,62,.2);
+}
+.top-bar h1{
+  font-family:var(--fh);
+  font-size:clamp(1.1rem,3.5vw,1.55rem);
+  color:var(--white);letter-spacing:.03em;
+  display:flex;align-items:center;gap:.5rem;
+}
+.top-bar h1 .pill{
+  font-size:.72rem;font-family:var(--fb);font-weight:800;
+  background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);
+  border-radius:999px;padding:.15rem .65rem;letter-spacing:.08em;
+  text-transform:uppercase;color:white;
+}
+.step-counter{
+  font-family:var(--fh);font-size:1rem;color:rgba(255,255,255,.7);
+  display:flex;align-items:center;gap:.5rem;
+}
+.step-counter span{color:#A5D8FF;font-size:1.1rem;}
+
+/* ═══════════════════════════════════════
+   PROGRESS DOTS
+═══════════════════════════════════════ */
+.progress{
+  display:flex;gap:.4rem;align-items:center;
+  padding:.65rem 1.5rem;background:rgba(26,26,62,.04);
+  border-bottom:1.5px solid var(--border);
+  position:relative;z-index:1;flex-wrap:wrap;
+}
+.pdot{
+  width:32px;height:8px;border-radius:4px;
+  background:var(--border);
+  transition:background .35s,width .35s;
+  cursor:pointer;
+}
+.pdot.done   {background:var(--teal);}
+.pdot.active {background:var(--blue);width:44px;}
+.pdot-label{
+  font-size:.7rem;font-weight:800;color:var(--gray);
+  text-transform:uppercase;letter-spacing:.07em;margin-left:.3rem;
+}
+
+/* ═══════════════════════════════════════
+   STEP CONTAINER
+═══════════════════════════════════════ */
+.steps-wrap{
+  max-width:900px;margin:0 auto;
+  padding:2rem 1.2rem 4rem;
+  position:relative;z-index:1;
+}
+.step{
+  display:none;
+  animation:stepIn .45s cubic-bezier(.34,1.56,.64,1);
+}
+.step.active{display:block;}
+@keyframes stepIn{
+  from{opacity:0;transform:translateY(18px) scale(.97);}
+  to  {opacity:1;transform:none;}
+}
+
+/* ═══════════════════════════════════════
+   SECTION CHIP
+═══════════════════════════════════════ */
+.chip{
+  display:inline-flex;align-items:center;gap:.35rem;
+  border-radius:999px;padding:.28rem .88rem;
+  font-size:.68rem;font-weight:900;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:.65rem;
+}
+.c-blue  {background:var(--blue);color:white;}
+.c-teal  {background:var(--teal);color:white;}
+.c-orange{background:var(--orange);color:white;}
+.c-gold  {background:var(--gold);color:var(--navy);}
+.c-purple{background:var(--purple);color:white;}
+
+/* ═══════════════════════════════════════
+   CARDS
+═══════════════════════════════════════ */
+.card{
+  background:var(--white);
+  border-radius:20px;
+  padding:1.6rem;
+  margin-bottom:1.2rem;
+  box-shadow:var(--sh);
+  border:1.5px solid var(--border);
+}
+.card-title{
+  font-family:var(--fh);
+  font-size:clamp(1.3rem,4vw,1.8rem);
+  color:var(--navy);
+  letter-spacing:.03em;
+  margin-bottom:.4rem;
+}
+.card-sub{
+  font-size:.95rem;font-weight:700;
+  color:var(--gray);margin-bottom:1rem;
+}
+
+/* ═══════════════════════════════════════
+   FRACTION DISPLAY
+═══════════════════════════════════════ */
+.fr{
+  display:inline-flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  font-family:var(--fh);font-weight:700;
+  line-height:1;vertical-align:middle;margin:0 2px;
+}
+.fr .fn{padding-bottom:2px;}
+.fr .fb{display:block;width:100%;border-top:2.5px solid currentColor;}
+.fr .fd{padding-top:2px;}
+.fr.sm {font-size:.92rem;}
+.fr.md {font-size:1.35rem;}
+.fr.lg {font-size:1.9rem;}
+.fr.xl {font-size:2.8rem;}
+
+/* ═══════════════════════════════════════
+   TENTHS STRIP MODEL
+═══════════════════════════════════════ */
+.strip-model{
+  display:flex;
+  border:3px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  height:80px;
+  box-shadow:var(--sh);
+}
+.strip-seg{
+  flex:1;
+  border-right:2.5px solid rgba(255,255,255,.7);
+  transition:background .4s;
+  position:relative;
+}
+.strip-seg:last-child{border-right:none;}
+.strip-seg.filled{background:var(--blue);}
+.strip-seg.empty {background:#EEF1F5;}
+.strip-seg.highlight{background:var(--orange);}
+.strip-seg.animated{
+  animation:fillPop .35s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes fillPop{
+  from{transform:scaleY(0);transform-origin:bottom;}
+  to  {transform:scaleY(1);}
+}
+.strip-label{
+  font-family:var(--fh);font-size:.85rem;font-weight:700;
+  text-align:center;color:var(--gray);margin-top:.35rem;
+}
+.strip-brace{
+  text-align:center;font-size:.9rem;
+  color:var(--navy);font-weight:800;
+  margin-top:.25rem;display:flex;align-items:center;justify-content:center;
+  gap:.2rem;
+}
+
+/* callout bubble (teacher speech) */
+.callout{
+  position:relative;
+  background:var(--gold-lt);
+  border:2px solid var(--gold);
+  border-radius:16px;
+  padding:1rem 1.2rem;
+  font-size:.93rem;font-weight:700;
+  line-height:1.6;color:var(--navy);
+  margin:1rem 0;
+}
+.callout::before{
+  content:'💡';
+  position:absolute;top:-14px;left:14px;
+  background:var(--gold-lt);padding:0 4px;
+  font-size:1.2rem;
+}
+
+/* ═══════════════════════════════════════
+   HIGHLIGHTED NUMBER BUILD
+═══════════════════════════════════════ */
+.num-build{
+  display:flex;align-items:center;
+  gap:.6rem;flex-wrap:wrap;
+  padding:1.1rem 1.4rem;
+  background:var(--pur-lt);
+  border-radius:16px;border:2.5px solid var(--purple);
+  margin:.8rem 0;
+  font-family:var(--fh);font-size:1.8rem;font-weight:700;
+}
+.nb-part{
+  display:flex;flex-direction:column;
+  align-items:center;gap:.2rem;
+}
+.nb-val{
+  font-size:2.4rem;font-weight:800;
+  transition:all .3s;
+}
+.nb-label{
+  font-size:.65rem;font-weight:900;
+  text-transform:uppercase;letter-spacing:.1em;
+  font-family:var(--fb);
+}
+.nb-op{color:var(--gray);font-size:1.5rem;}
+
+/* ═══════════════════════════════════════
+   PLACE VALUE TABLE
+═══════════════════════════════════════ */
+.pv-wrap{overflow-x:auto;margin:.8rem 0;}
+.pv-table{
+  border-collapse:collapse;
+  font-family:var(--fh);
+  text-align:center;
+  min-width:300px;
+  margin:0 auto;
+}
+.pv-table th{
+  padding:.5rem 1.5rem;font-size:.78rem;
+  font-family:var(--fb);font-weight:900;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:white;border:2px solid white;
+}
+.pv-table td{
+  padding:.6rem 1.5rem;
+  font-size:2.2rem;font-weight:800;
+  border:2px solid var(--border);
+  min-width:80px;
+}
+.pv-ones  {background:var(--blue);  }
+.pv-th    {background:var(--teal);  }
+.pv-dot   {background:white;color:var(--red);font-size:2.5rem;
+           border:none!important;padding:.6rem .3rem!important;}
+.pv-ones-d{background:var(--blue-lt);color:var(--blue);}
+.pv-th-d  {background:var(--teal-lt);color:var(--teal);}
+
+/* ═══════════════════════════════════════
+   INTERACTIVE PART — clickable strips
+═══════════════════════════════════════ */
+.click-strip{
+  display:flex;
+  border:3px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  height:70px;
+  cursor:pointer;
+  box-shadow:var(--sh);
+  transition:box-shadow .2s;
+}
+.click-strip:hover{box-shadow:var(--sh2);}
+.cs-seg{
+  flex:1;
+  border-right:2.5px solid rgba(255,255,255,.7);
+  background:#EEF1F5;
+  transition:background .2s,transform .15s;
+}
+.cs-seg:last-child{border-right:none;}
+.cs-seg.on {background:var(--teal);}
+.cs-seg:hover{transform:scaleY(1.05);filter:brightness(.88);}
+
+/* ═══════════════════════════════════════
+   ANSWER INPUT
+═══════════════════════════════════════ */
+.ans-input{
+  border:2.5px solid var(--border);
+  border-radius:10px;padding:.35rem .6rem;
+  font-family:var(--fh);font-size:1.4rem;font-weight:700;
+  color:var(--navy);background:#F8F9FA;
+  width:100px;text-align:center;
+  transition:border-color .2s;
+}
+.ans-input:focus{outline:none;border-color:var(--blue);background:white;}
+.ans-input.ok{border-color:var(--teal);background:var(--teal-lt);color:#0A5C3E;}
+.ans-input.no{border-color:var(--red);background:var(--red-lt);color:var(--red);animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ═══════════════════════════════════════
+   FEEDBACK BADGE
+═══════════════════════════════════════ */
+.fb-badge{
+  display:none;border-radius:12px;padding:.72rem 1rem;
+  margin-top:.65rem;font-size:.9rem;font-weight:700;
+  line-height:1.55;
+}
+.fb-badge.show{display:block;animation:stepIn .25s ease;}
+.fb-ok{background:var(--teal-lt);border:1.5px solid #5CC87A;color:#0A5C3E;}
+.fb-no{background:var(--red-lt);border:1.5px solid #F5ABAB;color:var(--red);}
+
+/* ═══════════════════════════════════════
+   MULTIPLE CHOICE
+═══════════════════════════════════════ */
+.mc-opts{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0;}
+.mc-btn{
+  border:2.5px solid var(--border);background:white;
+  border-radius:12px;padding:.5rem 1.1rem;
+  font-family:var(--fb);font-weight:700;font-size:.9rem;
+  color:var(--navy);cursor:pointer;transition:all .18s;
+}
+.mc-btn:hover   {border-color:var(--blue);background:var(--blue-lt);}
+.mc-btn.correct {border-color:var(--teal)!important;background:var(--teal-lt)!important;color:#0A5C3E;}
+.mc-btn.wrong   {border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red);animation:shake .3s ease;}
+
+/* ═══════════════════════════════════════
+   NAV BUTTONS
+═══════════════════════════════════════ */
+.nav-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:1.5rem;flex-wrap:wrap;gap:.6rem;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  border:none;border-radius:999px;
+  padding:.58rem 1.5rem;
+  font-family:var(--fb);font-size:.92rem;font-weight:800;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 3px 12px rgba(0,0,0,.1);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(0,0,0,.16);}
+.b-blue  {background:var(--blue);color:white;}
+.b-teal  {background:var(--teal);color:white;}
+.b-orange{background:var(--orange);color:white;}
+.b-gold  {background:var(--gold);color:var(--navy);}
+.b-ghost {background:transparent;border:2px solid var(--border);color:var(--gray);box-shadow:none;}
+.b-ghost:hover{background:var(--border);}
+.b-nav-prev{background:var(--navy);color:rgba(255,255,255,.8);}
+.b-nav-next{background:var(--blue);color:white;}
+
+/* ═══════════════════════════════════════
+   CONFETTI
+═══════════════════════════════════════ */
+.cf{position:fixed;inset:0;z-index:999;pointer-events:none;display:none;}
+.cf.go{display:block;}
+.cfp{position:absolute;top:-14px;border-radius:2px;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(800deg);opacity:0;}}
+
+/* ═══════════════════════════════════════
+   REVEAL ANIMATION
+═══════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(12px);}
+.reveal.shown{
+  opacity:1;transform:none;
+  transition:opacity .4s ease,transform .4s ease;
+}
+
+/* ═══════════════════════════════════════
+   FINAL RECAP
+═══════════════════════════════════════ */
+.recap-box{
+  background:linear-gradient(148deg,var(--navy) 0%,var(--blue) 55%,var(--teal) 100%);
+  border-radius:24px;padding:2rem;color:white;
+  box-shadow:var(--sh2);
+}
+.recap-box h3{font-family:var(--fh);font-size:1.6rem;color:#FFE566;margin-bottom:.9rem;}
+.ri{
+  display:flex;align-items:flex-start;gap:.75rem;
+  background:rgba(255,255,255,.12);border-radius:12px;
+  padding:.7rem .95rem;margin-bottom:.55rem;
+  font-weight:700;font-size:.93rem;
+  border:1px solid rgba(255,255,255,.14);
+}
+.ri:last-child{margin-bottom:0;}
+.ri-i{font-size:1.2rem;flex-shrink:0;margin-top:.04rem;}
+
+/* highlight box */
+.hl-box{
+  border-radius:14px;padding:1rem 1.2rem;
+  margin:.7rem 0;border-left:5px solid;
+  font-size:.9rem;font-weight:700;line-height:1.65;
+}
+.hl-blue  {background:var(--blue-lt);border-color:var(--blue);color:#1E3A8A;}
+.hl-teal  {background:var(--teal-lt);border-color:var(--teal);color:#065F46;}
+.hl-orange{background:var(--org-lt);border-color:var(--orange);color:#7C2D12;}
+.hl-gold  {background:var(--gold-lt);border-color:var(--gold);color:#78350F;}
+
+/* big equation display */
+.big-eq{
+  display:flex;align-items:center;gap:.7rem;
+  justify-content:center;flex-wrap:wrap;
+  font-family:var(--fh);font-size:2rem;
+  background:var(--blue-lt);border-radius:16px;
+  padding:1rem 1.4rem;border:2.5px solid var(--blue);
+  margin:.8rem 0;color:var(--navy);
+}
+.big-eq .op{color:var(--gray);font-size:1.5rem;}
+.big-eq .dec{color:var(--orange);}
+
+/* animated door for intro */
+.door-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:.3rem;
+  margin:.5rem auto;
+}
+.door-frame{
+  width:110px;
+  border:4px solid #8B6914;border-radius:8px 8px 0 0;
+  background:#C9944A;
+  position:relative;overflow:hidden;
+}
+.door-fill{
+  width:100%;background:var(--blue);
+  transition:height 1s ease;
+}
+.door-label{
+  font-family:var(--fh);font-size:.82rem;font-weight:700;
+  text-align:center;color:var(--gray);margin-top:.3rem;
+}
+.door-arrow{
+  font-size:.75rem;font-weight:800;color:var(--orange);
+  text-align:center;
+}
+
+/* tooltip helper */
+.tooltip-wrap{position:relative;display:inline-block;}
+.tooltip-content{
+  display:none;position:absolute;bottom:calc(100% + 8px);left:50%;
+  transform:translateX(-50%);
+  background:var(--navy);color:white;
+  font-size:.78rem;font-weight:700;
+  padding:.4rem .8rem;border-radius:8px;white-space:nowrap;
+  box-shadow:var(--sh);z-index:10;
+}
+.tooltip-wrap:hover .tooltip-content{display:block;}
+
+@media(max-width:520px){
+  .top-bar{flex-direction:column;align-items:flex-start;}
+  .strip-model,.click-strip{height:55px;}
+  .pv-table td{padding:.4rem .8rem;font-size:1.6rem;}
+  .big-eq{font-size:1.4rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- CONFETTI -->
+<div class="cf" id="cf"></div>
+
+<!-- ══════════════════════════════════════════════
+     TOP BAR
+══════════════════════════════════════════════ -->
+<header class="top-bar">
+  <h1>
+    🏛️ Represent Tenths as Fractions &amp; Decimals
+    <span class="pill">4th Grade</span>
+  </h1>
+  <div class="step-counter">Step <span id="stepNum">1</span> of 6</div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress" id="progressBar">
+  <div class="pdot active" id="pd0" onclick="goStep(0)" title="The Problem"></div>
+  <div class="pdot" id="pd1" onclick="goStep(1)" title="Part A – Visual Model"></div>
+  <div class="pdot" id="pd2" onclick="goStep(2)" title="Shade It!"></div>
+  <div class="pdot" id="pd3" onclick="goStep(3)" title="Part B – Read & Write"></div>
+  <div class="pdot" id="pd4" onclick="goStep(4)" title="Place Value"></div>
+  <div class="pdot" id="pd5" onclick="goStep(5)" title="Try It Yourself"></div>
+  <span class="pdot-label" id="pdLabel">The Problem</span>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     ALL STEPS
+══════════════════════════════════════════════ -->
+<div class="steps-wrap">
+
+<!-- ──────────────────────────────────────────────
+     STEP 0 · THE PROBLEM
+────────────────────────────────────────────── -->
+<div class="step active" id="step0">
+  <div class="chip c-blue">🏛️ The Problem</div>
+  <div class="card">
+    <h2 class="card-title">Represent Tenths as Fractions and Decimals</h2>
+    <p class="card-sub">Let's explore a real-world situation together!</p>
+
+    <!-- Museum visual -->
+    <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;margin:.5rem 0 1rem;">
+      <!-- Animated door -->
+      <div class="door-wrap">
+        <div style="font-size:2.2rem;line-height:1;">🏛️</div>
+        <div class="door-frame" id="doorFrame" style="height:140px;">
+          <div class="door-fill" id="doorFill" style="height:0%;"></div>
+        </div>
+        <div class="door-label">Museum door</div>
+        <div class="door-arrow" id="doorArrow" style="opacity:0;">↑ 1.7 m tall!</div>
+      </div>
+
+      <!-- Problem text -->
+      <div style="flex:1;min-width:220px;">
+        <div style="background:linear-gradient(135deg,#EDF2FF,#F3F0FF);border-radius:18px;padding:1.4rem 1.6rem;border:2px solid #BAC8FF;">
+          <p style="font-family:var(--fh);font-size:1.15rem;color:var(--navy);line-height:1.65;font-weight:700;">
+            A museum doorway is
+            <span style="font-size:1.5rem;color:var(--blue);">1</span><span class="fr md" style="color:var(--blue);"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span>
+            meters high.
+          </p>
+          <p style="font-size:.95rem;font-weight:700;color:var(--gray);margin-top:.7rem;line-height:1.6;">
+            How can you represent that height with <strong style="color:var(--teal);">tenths models</strong> and as a <strong style="color:var(--orange);">decimal</strong>?
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hl-gold">
+      💡 <strong>Before we start — think for a moment:</strong>
+      The number 1<span class="fr sm"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span> is called a <em>mixed number</em>.
+      It has a <strong>whole part (1)</strong> and a <strong>fraction part (7/10)</strong>.
+      Today we'll learn how to show it with a model AND write it as a decimal!
+    </div>
+
+    <button class="btn b-blue" onclick="animateDoor();nextStep();" style="margin-top:.5rem;">
+      Let's explore! →
+    </button>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────
+     STEP 1 · PART A – VISUAL MODEL (concept)
+────────────────────────────────────────────── -->
+<div class="step" id="step1">
+  <div class="chip c-blue">📊 Part A — Visual Model</div>
+  <div class="card">
+    <h2 class="card-title">Represent 1<span class="fr md" style="color:var(--blue);"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span> with Tenths Models</h2>
+    <p class="card-sub">We need TWO strips — one for the whole, one for the tenths.</p>
+
+    <div class="hl-blue">
+      <strong>🔑 Key idea:</strong> Each strip below is divided into <strong>10 equal parts</strong>.
+      Each part = 1 tenth. When ALL 10 parts are shaded = <strong>1 whole</strong>.
+    </div>
+
+    <!-- Two strips side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.1rem 0;">
+
+      <!-- Strip 1: 1 whole -->
+      <div>
+        <p style="font-weight:800;font-size:.88rem;color:var(--gray);margin-bottom:.4rem;text-align:center;">Strip 1</p>
+        <div class="strip-model" id="strip1">
+          <!-- built by JS -->
+        </div>
+        <div class="strip-brace">
+          <span style="font-size:1.2rem;">⎧</span>
+          <div>
+            <div style="font-family:var(--fh);font-size:.9rem;color:var(--blue);">1 whole</div>
+            <div style="font-size:.75rem;font-weight:700;color:var(--gray);">= 10 tenths</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strip 2: 7 tenths -->
+      <div>
+        <p style="font-weight:800;font-size:.88rem;color:var(--gray);margin-bottom:.4rem;text-align:center;">Strip 2</p>
+        <div class="strip-model" id="strip2">
+          <!-- built by JS -->
+        </div>
+        <div class="strip-brace">
+          <span style="font-size:1.2rem;">⎧</span>
+          <div>
+            <div style="font-family:var(--fh);font-size:.9rem;color:var(--orange);">7 tenths</div>
+            <div style="font-size:.75rem;font-weight:700;color:var(--gray);">= 7 out of 10 parts</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Callout bubble -->
+    <div class="callout">
+      To show <strong>1<span class="fr sm"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span></strong>,
+      shade <strong>1 whole strip</strong> (all 10 parts in blue) and <strong>7 tenths</strong> (7 parts in orange) in a second strip.
+    </div>
+
+    <div class="nav-row">
+      <button class="btn b-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn b-blue" onclick="nextStep()">Next: Shade It! →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────
+     STEP 2 · SHADE IT YOURSELF
+────────────────────────────────────────────── -->
+<div class="step" id="step2">
+  <div class="chip c-teal">✏️ Shade It!</div>
+  <div class="card">
+    <h2 class="card-title">Your Turn to Shade!</h2>
+    <p class="card-sub">Click the cells on each strip to shade them correctly for 1<span class="fr sm"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span></p>
+
+    <div class="hl-teal" style="margin-bottom:1rem;">
+      🎯 <strong>Goal:</strong> Shade <strong>all 10 parts</strong> of Strip 1 (= 1 whole) and <strong>7 parts</strong> of Strip 2 (= 7 tenths).
+    </div>
+
+    <!-- Interactive strip 1 -->
+    <div style="margin-bottom:1.2rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;">
+        <p style="font-weight:800;font-size:.9rem;color:var(--blue);">Strip 1 — shade ALL 10 parts (= 1 whole)</p>
+        <span id="s1count" style="font-family:var(--fh);font-size:1rem;color:var(--blue);font-weight:700;">0 / 10</span>
+      </div>
+      <div class="click-strip" id="cs1"><!-- JS --></div>
+      <div id="s1msg" style="font-size:.82rem;font-weight:700;color:var(--teal);min-height:1.1rem;margin-top:.25rem;"></div>
+    </div>
+
+    <!-- Interactive strip 2 -->
+    <div style="margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;">
+        <p style="font-weight:800;font-size:.9rem;color:var(--orange);">Strip 2 — shade exactly 7 parts (= 7 tenths)</p>
+        <span id="s2count" style="font-family:var(--fh);font-size:1rem;color:var(--orange);font-weight:700;">0 / 10</span>
+      </div>
+      <div class="click-strip" id="cs2"><!-- JS --></div>
+      <div id="s2msg" style="font-size:.82rem;font-weight:700;color:var(--teal);min-height:1.1rem;margin-top:.25rem;"></div>
+    </div>
+
+    <div id="shadeResult" style="display:none;" class="hl-teal">
+      🎉 <strong>Perfect!</strong> You shaded 1 whole AND 7 tenths — that's exactly
+      1<span class="fr sm"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span>! 
+      Now let's learn how to <em>write</em> this as a decimal.
+    </div>
+
+    <div class="nav-row">
+      <button class="btn b-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn b-teal" id="toPartB" onclick="nextStep()">Next: Read &amp; Write →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────
+     STEP 3 · PART B — READ & WRITE
+────────────────────────────────────────────── -->
+<div class="step" id="step3">
+  <div class="chip c-orange">📖 Part B — Read &amp; Write</div>
+  <div class="card">
+    <h2 class="card-title">Read the Number, Write the Decimal</h2>
+    <p class="card-sub">Let's break apart 1<span class="fr sm"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span> and write it as a decimal — step by step.</p>
+
+    <!-- Animated reveal steps -->
+    <div id="readSteps">
+      <div class="reveal" id="rs0">
+        <div class="hl-blue">
+          <strong>Step 1 — Say the number aloud:</strong><br>
+          1<span class="fr sm"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span> is read as
+          <strong style="font-size:1.1rem;">"one <span style="color:var(--orange);">and</span> seven tenths."</strong>
+        </div>
+      </div>
+
+      <div class="reveal" id="rs1" style="margin-top:.7rem;">
+        <div style="background:#FFF0E0;border-radius:14px;padding:1rem 1.2rem;border:2px solid var(--orange);">
+          <p style="font-weight:800;font-size:.9rem;color:var(--orange);margin-bottom:.4rem;">
+            🔑 The word <strong>"and"</strong> shows where to write the decimal point!
+          </p>
+          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-family:var(--fh);font-size:1.5rem;">
+            <span style="color:var(--blue);">"one"</span>
+            <span style="color:var(--orange);">and</span>
+            <span style="color:var(--teal);">"seven tenths"</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-family:var(--fh);font-size:1.5rem;margin-top:.4rem;">
+            <span style="color:var(--blue);">1</span>
+            <span style="color:var(--orange);font-size:2rem;font-weight:900;">·</span>
+            <span style="color:var(--teal);">7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" id="rs2" style="margin-top:.7rem;">
+        <div class="hl-teal">
+          <strong>Step 2 — Write the parts:</strong><br>
+          "One" is written as <strong style="color:var(--blue);">1</strong> &nbsp;·&nbsp;
+          "Seven tenths" is written as <strong style="color:var(--teal);">0.7</strong>
+        </div>
+      </div>
+
+      <div class="reveal" id="rs3" style="margin-top:.7rem;">
+        <!-- Big equation -->
+        <div class="big-eq">
+          <span style="color:var(--blue);">1</span>
+          <span class="fr lg" style="color:var(--blue);"><span class="fn">7</span><span class="fb"></span><span class="fd">10</span></span>
+          <span class="op">=</span>
+          <span style="color:var(--blue);">1</span>
+          <span style="color:var(--orange);font-size:2.5rem;line-height:1;font-weight:900;margin:0 -.2rem;">.</span>
+          <span style="color:var(--teal);">7</span>
+          <span class="op">=</span>
+          <span class="dec">1.7</span>
+        </div>
+        <p style="text-align:center;font-family:var(--fh);font-size:1.1rem;color:var(--gray);margin-top:.4rem;">
+          The decimal is <strong style="color:var(--orange);font-size:1.4rem;">1.7</strong> ✓
+        </p>
+      </div>
+    </div>
+
+    <div id="revealBtn" style="margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap;">
+      <button class="btn b-orange" onclick="revealNext()">▶ Show next step</button>
+      <button class="btn b-ghost" onclick="revealAll()">Show all at once</button>
+    </div>
+
+    <div class="nav-row" style="margin-top:1.2rem;">
+      <button class="btn b-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn b-blue" onclick="nextStep()">Next: Place Value →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────
+     STEP 4 · PLACE VALUE CHART
+────────────────────────────────────────────── -->
+<div class="step" id="step4">
+  <div class="chip c-purple">📊 Place Value</div>
+  <div class="card">
+    <h2 class="card-title">Place Value Chart for 1.7</h2>
+    <p class="card-sub">Every digit in a decimal has a place — let's see where each one lives.</p>
+
+    <!-- Interactive PV chart -->
+    <div class="pv-wrap">
+      <table class="pv-table">
+        <thead>
+          <tr>
+            <th class="pv-ones">Ones</th>
+            <th style="background:transparent;color:transparent;border:none;padding:.3rem;"></th>
+            <th class="pv-th">Tenths</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pv-ones-d" id="pv-ones">?</td>
+            <td class="pv-dot">.</td>
+            <td class="pv-th-d" id="pv-th">?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="text-align:center;font-size:.82rem;font-weight:700;color:var(--gray);">Click the cells to fill them in!</p>
+
+    <!-- Click to reveal -->
+    <div style="display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin:.8rem 0;">
+      <button class="btn b-blue"  onclick="fillPV('ones')">Fill in Ones digit</button>
+      <button class="btn b-teal"  onclick="fillPV('tenth')">Fill in Tenths digit</button>
+      <button class="btn b-ghost" onclick="fillPV('both')">Fill Both</button>
+    </div>
+
+    <div id="pvMsg" class="hl-blue" style="display:none;margin:.5rem 0;"></div>
+
+    <!-- Number build visual -->
+    <div class="num-build" id="numBuild" style="display:none;">
+      <div class="nb-part">
+        <span class="nb-val" style="color:var(--blue);" id="nb-one"> </span>
+        <span class="nb-label" style="color:var(--blue);">ones</span>
+      </div>
+      <span class="nb-op">.</span>
+      <div class="nb-part">
+        <span class="nb-val" style="color:var(--teal);" id="nb-ten"> </span>
+        <span class="nb-label" style="color:var(--teal);">tenths</span>
+      </div>
+      <span class="nb-op">=</span>
+      <div class="nb-part">
+        <span class="nb-val" style="color:var(--orange);" id="nb-dec"> </span>
+        <span class="nb-label" style="color:var(--orange);">decimal</span>
+      </div>
+    </div>
+
+    <div class="hl-gold" style="margin-top:.6rem;">
+      💡 <strong>Remember:</strong> The digit <strong style="color:var(--blue);">1</strong> is in the <em>ones place</em>
+      (= 1 whole). The digit <strong style="color:var(--teal);">7</strong> is in the <em>tenths place</em>
+      (= 7 out of 10 equal parts).
+    </div>
+
+    <div class="nav-row">
+      <button class="btn b-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn b-blue" onclick="nextStep()">Next: Try It Yourself →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────
+     STEP 5 · TRY IT YOURSELF
+────────────────────────────────────────────── -->
+<div class="step" id="step5">
+  <div class="chip c-gold">🎯 Try It Yourself!</div>
+  <div class="card">
+    <h2 class="card-title">Now You Try!</h2>
+    <p class="card-sub">Apply what you learned. Answer each question below:</p>
+
+    <!-- Q1 — MC -->
+    <div style="background:#F8F9FA;border-radius:16px;padding:1.2rem;border:2px solid var(--border);margin-bottom:1.1rem;">
+      <p style="font-weight:800;font-size:.97rem;color:var(--dark);margin-bottom:.7rem;">
+        <span style="background:var(--blue);color:white;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:900;margin-right:.4rem;">1</span>
+        How many tenths strips do you need to represent 2<span class="fr sm"><span class="fn">4</span><span class="fb"></span><span class="fd">10</span></span>?
+      </p>
+      <div class="mc-opts" id="q1opts">
+        <button class="mc-btn" onclick="checkQ1(this,false,'❌ Not quite! 2⁴⁄₁₀ has a whole part of 2 (so 2 full strips) plus 4 tenths (one more strip with 4 shaded). That\'s 3 strips total.')">2 strips</button>
+        <button class="mc-btn" onclick="checkQ1(this,true,'✅ Correct! 2 full strips (for the 2 wholes) + 1 more strip with 4 parts shaded (for 4/10) = 3 strips total! 🎯')">3 strips</button>
+        <button class="mc-btn" onclick="checkQ1(this,false,'❌ Not quite! You only need 3 strips: 2 full ones for the 2 wholes, plus 1 more strip with 4 tenths shaded.')">4 strips</button>
+        <button class="mc-btn" onclick="checkQ1(this,false,'❌ Remember: we need 1 strip per whole, plus 1 more for the tenths part. So 2 + 1 = 3 strips.')">6 strips</button>
+      </div>
+      <div class="fb-badge" id="q1fb"></div>
+    </div>
+
+    <!-- Q2 — decimal input -->
+    <div style="background:#F8F9FA;border-radius:16px;padding:1.2rem;border:2px solid var(--border);margin-bottom:1.1rem;">
+      <p style="font-weight:800;font-size:.97rem;color:var(--dark);margin-bottom:.7rem;">
+        <span style="background:var(--teal);color:white;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:900;margin-right:.4rem;">2</span>
+        Write the decimal form of 2<span class="fr sm"><span class="fn">4</span><span class="fb"></span><span class="fd">10</span></span>
+      </p>
+      <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;">
+        <label style="font-weight:800;font-size:.9rem;">Decimal:</label>
+        <input class="ans-input" id="q2in" type="text" placeholder="?.?">
+        <button class="btn b-teal" onclick="checkQ2()">Check ✓</button>
+      </div>
+      <div class="fb-badge" id="q2fb"></div>
+    </div>
+
+    <!-- Q3 — shade your own strip -->
+    <div style="background:#F8F9FA;border-radius:16px;padding:1.2rem;border:2px solid var(--border);margin-bottom:1.1rem;">
+      <p style="font-weight:800;font-size:.97rem;color:var(--dark);margin-bottom:.4rem;">
+        <span style="background:var(--orange);color:white;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:900;margin-right:.4rem;">3</span>
+        Shade the strip to show <strong>0.3</strong> (three tenths)
+      </p>
+      <div style="font-size:.82rem;font-weight:700;color:var(--gray);margin-bottom:.5rem;">Click 3 squares!</div>
+      <div class="click-strip" id="cs3" style="max-width:400px;"></div>
+      <div id="s3count" style="font-family:var(--fh);font-size:1rem;color:var(--orange);margin-top:.35rem;">Shaded: 0 / 10</div>
+      <div class="fb-badge" id="q3fb"></div>
+    </div>
+
+    <!-- Q4 — MC (read the decimal) -->
+    <div style="background:#F8F9FA;border-radius:16px;padding:1.2rem;border:2px solid var(--border);margin-bottom:1.1rem;">
+      <p style="font-weight:800;font-size:.97rem;color:var(--dark);margin-bottom:.7rem;">
+        <span style="background:var(--purple);color:white;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:900;margin-right:.4rem;">4</span>
+        How do you read the decimal <strong style="font-size:1.2rem;">1.7</strong> aloud?
+      </p>
+      <div class="mc-opts" id="q4opts">
+        <button class="mc-btn" onclick="checkQ4(this,false,'❌ Not quite! We read the decimal point as the word "and." So 1.7 is "one AND seven tenths" — not "one point seven."')">One point seven</button>
+        <button class="mc-btn" onclick="checkQ4(this,true,'✅ Yes! "One AND seven tenths" — the word "and" marks where the decimal point goes! ⭐')">One and seven tenths</button>
+        <button class="mc-btn" onclick="checkQ4(this,false,'❌ Seven and one tenth would mean 7.1, not 1.7. Remember: the whole number comes first!')">Seven and one tenth</button>
+        <button class="mc-btn" onclick="checkQ4(this,false,'❌ "Seventeen tenths" would be 17/10 = 1.7 mathematically, but we don\'t read it that way. The standard way is "one AND seven tenths."')">Seventeen tenths</button>
+      </div>
+      <div class="fb-badge" id="q4fb"></div>
+    </div>
+
+    <!-- Completion -->
+    <div id="allCorrect" style="display:none;" class="hl-teal">
+      🎊 <strong>Amazing work!</strong> You've mastered representing tenths as fractions and decimals!
+    </div>
+
+    <div class="nav-row">
+      <button class="btn b-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn b-gold" onclick="goStep(0)">🔁 Start Again</button>
+      <button class="btn b-teal" onclick="showSummary()">See Summary ✓</button>
+    </div>
+  </div>
+
+  <!-- SUMMARY RECAP (hidden until button click) -->
+  <div id="summaryBox" style="display:none;margin-top:1.2rem;">
+    <div class="recap-box">
+      <h3>🎯 What We Learned Today</h3>
+      <div class="ri"><span class="ri-i">📊</span><span>
+        A <strong>tenths model</strong> divides 1 whole into 10 equal parts. Each part = <span class="fr sm" style="color:#A5D8FF;"><span class="fn">1</span><span class="fb" style="border-color:#A5D8FF;"></span><span class="fd">10</span></span> = <strong>0.1</strong>
+      </span></div>
+      <div class="ri"><span class="ri-i">🔷</span><span>
+        To show a <strong>mixed number</strong> like 1<span class="fr sm" style="color:#A5D8FF;"><span class="fn">7</span><span class="fb" style="border-color:#A5D8FF;"></span><span class="fd">10</span></span>: shade <strong>1 whole strip + 7 tenths</strong>
+      </span></div>
+      <div class="ri"><span class="ri-i">💡</span><span>
+        The word <strong style="color:#FFE566;">"and"</strong> when reading a mixed number shows where the <strong>decimal point</strong> goes
+      </span></div>
+      <div class="ri"><span class="ri-i">✍️</span><span>
+        "One" → <strong style="color:#A5D8FF;">1</strong> &nbsp;·&nbsp; "Seven tenths" → <strong style="color:#69DB7C;">0.7</strong> &nbsp;·&nbsp; Together → <strong style="color:#FFE566;">1.7</strong>
+      </span></div>
+      <div class="ri"><span class="ri-i">📐</span><span>
+        In the decimal <strong>1.7</strong>: the digit <strong style="color:#A5D8FF;">1</strong> is in the <em>ones place</em>; the digit <strong style="color:#69DB7C;">7</strong> is in the <em>tenths place</em>
+      </span></div>
+    </div>
+  </div>
+
+</div><!-- /step5 -->
+
+</div><!-- /steps-wrap -->
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════ -->
+<script>
+/* ────────────────────────────
+   STATE
+──────────────────────────── */
+let cur = 0;
+const TOTAL = 6;
+const LABELS = ['The Problem','Part A – Visual Model','Shade It!','Part B – Read & Write','Place Value','Try It Yourself'];
+
+/* ────────────────────────────
+   CONFETTI
+──────────────────────────── */
+let cfT;
+function confetti(n) {
+  clearTimeout(cfT);
+  const w = document.getElementById('cf');
+  w.innerHTML = ''; w.className = 'cf go';
+  const cols = ['#3B5BDB','#0CA678','#F76707','#F59F00','#7048E8','#E03131'];
+  for (let i = 0; i < (n||50); i++) {
+    const el = document.createElement('div');
+    el.className = 'cfp';
+    const c = cols[Math.floor(Math.random() * cols.length)];
+    const sz = Math.random() * 9 + 5;
+    el.style.cssText = `left:${Math.random()*100}vw;background:${c};width:${sz}px;height:${sz+4}px;border-radius:${Math.random()>.5?'50%':'3px'};animation-duration:${(Math.random()*1.5+1.4).toFixed(1)}s;animation-delay:${(Math.random()*.8).toFixed(2)}s;`;
+    w.appendChild(el);
+  }
+  cfT = setTimeout(() => { w.className = 'cf'; }, 5000);
+}
+
+/* ────────────────────────────
+   NAVIGATION
+──────────────────────────── */
+function goStep(n) {
+  document.getElementById('step' + cur).classList.remove('active');
+  cur = n;
+  document.getElementById('step' + cur).classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function nextStep() { if (cur < TOTAL - 1) goStep(cur + 1); }
+function prevStep() { if (cur > 0) goStep(cur - 1); }
+
+function updateProgress() {
+  document.getElementById('stepNum').textContent = cur + 1;
+  document.getElementById('pdLabel').textContent = LABELS[cur];
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.getElementById('pd' + i);
+    d.classList.remove('active','done');
+    if (i === cur)  d.classList.add('active');
+    if (i  < cur)  d.classList.add('done');
+  }
+}
+
+/* ────────────────────────────
+   DOOR ANIMATION (step 0)
+──────────────────────────── */
+function animateDoor() {
+  const fill  = document.getElementById('doorFill');
+  const arrow = document.getElementById('doorArrow');
+  if (!fill) return;
+  setTimeout(() => { fill.style.height  = '80%'; }, 200);
+  setTimeout(() => { arrow.style.opacity = '1'; }, 1100);
+}
+
+/* ────────────────────────────
+   BUILD STATIC STRIPS (step 1)
+──────────────────────────── */
+function buildStrip(id, filled, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const seg = document.createElement('div');
+    seg.className = 'strip-seg animated';
+    seg.style.animationDelay = (i * 0.06) + 's';
+    seg.style.background = i < filled ? color : '#EEF1F5';
+    el.appendChild(seg);
+  }
+}
+
+/* ────────────────────────────
+   CLICKABLE STRIPS (step 2)
+──────────────────────────── */
+function buildClickStrip(id, target, countId, msgId, color, cb) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  let count = 0;
+  for (let i = 0; i < 10; i++) {
+    const seg = document.createElement('div');
+    seg.className = 'cs-seg';
+    seg.dataset.on = '0';
+    seg.addEventListener('click', function () {
+      if (this.dataset.on === '0') {
+        this.style.background = color;
+        this.dataset.on = '1';
+        count++;
+      } else {
+        this.style.background = '#EEF1F5';
+        this.dataset.on = '0';
+        count = Math.max(0, count - 1);
+      }
+      document.getElementById(countId).textContent = count + ' / 10';
+      if (msgId) {
+        const m = document.getElementById(msgId);
+        if (count === target) {
+          m.textContent = count === 10 ? '✅ Perfect! All 10 = 1 whole!' : `✅ ${count} tenths shaded — exactly right!`;
+          m.style.color = '#0CA678';
+        } else if (count > target) {
+          m.textContent = `⚠️ Too many! You need exactly ${target}. Click a cell to remove it.`;
+          m.style.color = '#E03131';
+        } else {
+          m.textContent = `${target - count} more to go...`;
+          m.style.color = '#868E96';
+        }
+      }
+      if (cb) cb(id, count);
+    });
+    el.appendChild(seg);
+  }
+}
+
+/* ────────────────────────────
+   SHADE CHECK (step 2)
+──────────────────────────── */
+let s1done = false, s2done = false;
+function checkShadeComplete(id, count) {
+  if (id === 'cs1' && count === 10) s1done = true;
+  if (id === 'cs1' && count !== 10) s1done = false;
+  if (id === 'cs2' && count === 7)  s2done = true;
+  if (id === 'cs2' && count !== 7)  s2done = false;
+  const r = document.getElementById('shadeResult');
+  if (s1done && s2done) {
+    r.style.display = 'block';
+    confetti(40);
+  } else {
+    r.style.display = 'none';
+  }
+}
+
+/* ────────────────────────────
+   REVEAL STEPS (step 3)
+──────────────────────────── */
+let revealIdx = -1;
+const REVEAL_IDS = ['rs0','rs1','rs2','rs3'];
+
+function revealNext() {
+  revealIdx++;
+  if (revealIdx < REVEAL_IDS.length) {
+    document.getElementById(REVEAL_IDS[revealIdx]).classList.add('shown');
+  }
+  if (revealIdx >= REVEAL_IDS.length - 1) {
+    document.getElementById('revealBtn').style.display = 'none';
+    confetti(30);
+  }
+}
+function revealAll() {
+  REVEAL_IDS.forEach(id => document.getElementById(id).classList.add('shown'));
+  document.getElementById('revealBtn').style.display = 'none';
+  revealIdx = REVEAL_IDS.length;
+}
+
+/* ────────────────────────────
+   PLACE VALUE (step 4)
+──────────────────────────── */
+let pvOnes = false, pvTenth = false;
+function fillPV(which) {
+  if (which === 'ones' || which === 'both') {
+    document.getElementById('pv-ones').textContent = '1';
+    document.getElementById('pv-ones').style.color  = 'var(--blue)';
+    pvOnes = true;
+  }
+  if (which === 'tenth' || which === 'both') {
+    document.getElementById('pv-th').textContent  = '7';
+    document.getElementById('pv-th').style.color   = 'var(--teal)';
+    pvTenth = true;
+  }
+  if (pvOnes && pvTenth) {
+    const m = document.getElementById('pvMsg');
+    m.style.display = 'block';
+    m.innerHTML = '✅ <strong>1</strong> is in the <em>ones place</em> (1 whole meter). <strong>7</strong> is in the <em>tenths place</em> (7 tenths of a meter). So 1.7 meters!';
+    const nb = document.getElementById('numBuild');
+    nb.style.display = 'flex';
+    document.getElementById('nb-one').textContent = '1';
+    document.getElementById('nb-ten').textContent = '7';
+    document.getElementById('nb-dec').textContent = '1.7';
+    confetti(25);
+  }
+}
+
+/* ────────────────────────────
+   Q1 (step 5)
+──────────────────────────── */
+function checkQ1(btn, correct, msg) {
+  const opts = document.getElementById('q1opts').querySelectorAll('.mc-btn');
+  opts.forEach(b => b.style.pointerEvents = 'none');
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) setTimeout(() => { btn.classList.remove('wrong'); opts.forEach(b => b.style.pointerEvents = ''); }, 900);
+  const fb = document.getElementById('q1fb');
+  fb.className = 'fb-badge ' + (correct ? 'fb-ok' : 'fb-no') + ' show';
+  fb.textContent = msg;
+  if (correct) { confetti(25); checkAllDone(); }
+}
+
+/* ────────────────────────────
+   Q2 (step 5)
+──────────────────────────── */
+function checkQ2() {
+  const v = document.getElementById('q2in').value.trim();
+  const inp = document.getElementById('q2in');
+  const fb  = document.getElementById('q2fb');
+  inp.classList.remove('ok','no');
+  if (v === '2.4' || v === '2.4') {
+    inp.classList.add('ok');
+    fb.className = 'fb-badge fb-ok show';
+    fb.textContent = '✅ Perfect! 2⁴⁄₁₀ = 2.4. Two wholes + four tenths = 2.4!';
+    confetti(25);
+    checkAllDone();
+  } else if (v === '24' || v === '0.24') {
+    inp.classList.add('no');
+    fb.className = 'fb-badge fb-no show';
+    fb.textContent = '❌ Almost! Remember: the whole number (2) goes before the decimal point, and the tenths digit (4) goes after. So: 2.4';
+  } else {
+    inp.classList.add('no');
+    fb.className = 'fb-badge fb-no show';
+    fb.textContent = '❌ Try again! Think: "two AND four tenths." The "and" = decimal point. Ones: 2, Tenths: 4 → 2.4';
+  }
+}
+
+/* ────────────────────────────
+   Q3 strip (step 5)
+──────────────────────────── */
+let q3count = 0;
+function buildQ3Strip() {
+  const el = document.getElementById('cs3');
+  if (!el) return;
+  el.innerHTML = '';
+  q3count = 0;
+  for (let i = 0; i < 10; i++) {
+    const seg = document.createElement('div');
+    seg.className = 'cs-seg';
+    seg.dataset.on = '0';
+    seg.addEventListener('click', function () {
+      if (this.dataset.on === '0') {
+        this.style.background = 'var(--orange)';
+        this.dataset.on = '1'; q3count++;
+      } else {
+        this.style.background = '#EEF1F5';
+        this.dataset.on = '0'; q3count = Math.max(0, q3count - 1);
+      }
+      document.getElementById('s3count').textContent = 'Shaded: ' + q3count + ' / 10';
+      const fb = document.getElementById('q3fb');
+      if (q3count === 3) {
+        fb.className = 'fb-badge fb-ok show';
+        fb.textContent = '✅ Correct! 3 tenths shaded = 3/10 = 0.3! Great job!';
+        confetti(25); checkAllDone();
+      } else if (q3count > 3) {
+        fb.className = 'fb-badge fb-no show';
+        fb.textContent = `⚠️ Too many! 0.3 = 3 tenths. Click a cell to unshade it.`;
+      } else {
+        fb.className = 'fb-badge'; fb.className = '';
+      }
+    });
+    el.appendChild(seg);
+  }
+}
+
+/* ────────────────────────────
+   Q4 (step 5)
+──────────────────────────── */
+function checkQ4(btn, correct, msg) {
+  const opts = document.getElementById('q4opts').querySelectorAll('.mc-btn');
+  opts.forEach(b => b.style.pointerEvents = 'none');
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) setTimeout(() => { btn.classList.remove('wrong'); opts.forEach(b => b.style.pointerEvents = ''); }, 900);
+  const fb = document.getElementById('q4fb');
+  fb.className = 'fb-badge ' + (correct ? 'fb-ok' : 'fb-no') + ' show';
+  fb.textContent = msg;
+  if (correct) { confetti(35); checkAllDone(); }
+}
+
+/* ────────────────────────────
+   CHECK ALL DONE
+──────────────────────────── */
+let doneCount = 0;
+function checkAllDone() {
+  doneCount++;
+  if (doneCount >= 4) {
+    document.getElementById('allCorrect').style.display = 'block';
+  }
+}
+
+/* ────────────────────────────
+   SHOW SUMMARY
+──────────────────────────── */
+function showSummary() {
+  const s = document.getElementById('summaryBox');
+  s.style.display = 'block';
+  s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  confetti(80);
+}
+
+/* ────────────────────────────
+   INIT
+──────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  updateProgress();
+
+  // Step 1 strips (with delay for animation)
+  setTimeout(() => {
+    buildStrip('strip1', 10, 'var(--blue)');
+    buildStrip('strip2', 7,  'var(--orange)');
+  }, 100);
+
+  // Step 2 interactive strips
+  buildClickStrip('cs1', 10, 's1count', 's1msg', 'var(--blue)',   checkShadeComplete);
+  buildClickStrip('cs2', 7,  's2count', 's2msg', 'var(--orange)', checkShadeComplete);
+
+  // Step 5 strip
+  buildQ3Strip();
+});
+</script>
+</body>
+</html>
